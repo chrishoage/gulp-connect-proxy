@@ -6,7 +6,7 @@ var extend = require('extend');
 
 
 function proxyRequest (localRequest, localResponse, next) {
-  console.log('proxyRequest', 'http://' + localRequest.url.slice(1))
+
   var parts = url.parse('http://' + localRequest.url.slice(1));
   var options = {
     host: parts.host,
@@ -40,6 +40,7 @@ function Proxy (options) {
     var pathChecks = []
     config.root.forEach(function(root, i) {
       var p = path.resolve(root)+localRequest.url;
+
       fs.access(p, function(err) {
         pathChecks.push(err ? false : true)
         if (config.root.length == ++i) {
@@ -49,7 +50,13 @@ function Proxy (options) {
           if (pathExists) {
             next();
           } else {
-            proxyRequest(localRequest, localResponse, next)
+            if (localRequest.url.indexOf(config.proxyBasePath) === 0) {
+              localRequest.url = localRequest.url.replace(config.proxyBasePath, '');
+              proxyRequest(localRequest, localResponse, next)
+            } else {
+              next();
+            }
+
           }
         }
       });
