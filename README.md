@@ -11,7 +11,7 @@ gulp.task('connect', function () {
     livereload: true,
     middleware: function (connect, opt) {
       var Proxy = require('gulp-connect-proxy');
-      opt.proxyBasePath = '/proxy';
+      opt.route = '/proxy';
       var proxy = new Proxy(opt);
       return [proxy];
     }
@@ -20,9 +20,9 @@ gulp.task('connect', function () {
 ```
 
 ## Notes:
-`opt.proxyBasePath` is optional, if omitted requests made to `http://localhost:9000/foo.com/bar.png` will be proxied.
+`opt.route` is optional, if omitted requests made to `http://localhost:9000/foo.com/bar.png` will be proxied.
 
-If `opt.proxyBasePath` is set requests made to `http://localhost:9000/proxy/foo.com/bar.png` will be proxied.
+If `opt.route` is set requests made to `http://localhost:9000/proxy/foo.com/bar.png` will be proxied.
 
 **This is for development purposes only**. If you need a proxy in production use Nginx or Apache.
 
