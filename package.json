@@ -2,6 +2,10 @@
   "name": "gulp-connect-proxy",
   "version": "0.2.0",
   "description": "A simple proxy middleware for gulp-connect",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chrishoage/gulp-connect-proxy.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
