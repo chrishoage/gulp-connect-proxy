@@ -8,6 +8,7 @@ var extend = require('extend');
 function proxyRequest (localRequest, localResponse, next) {
 
   var parts = url.parse('http://' + localRequest.url.slice(1));
+
   var options = {
     host: parts.host,
     path: parts.path
@@ -22,13 +23,15 @@ function proxyRequest (localRequest, localResponse, next) {
       localResponse.writeHead(remoteRequest.statusCode);
       localResponse.end();
     }
+  }).on('error', function(e) {
+    next();
   }).end();
 };
 
 function Proxy (options) {
-  var config = extend({}, options, {
-    proxyBasePath: '/'
-  });
+  var config = extend({}, {
+    proxyBasePath: false
+  }, options);
 
   return function (localRequest, localResponse, next) {
     if (typeof config.root === 'string') {
@@ -50,13 +53,11 @@ function Proxy (options) {
           if (pathExists) {
             next();
           } else {
-            if (localRequest.url.indexOf(config.proxyBasePath) === 0) {
+            if (config.proxyBasePath && localRequest.url.indexOf(config.proxyBasePath) === 0) {
               localRequest.url = localRequest.url.replace(config.proxyBasePath, '');
-              proxyRequest(localRequest, localResponse, next)
-            } else {
-              next();
             }
 
+            proxyRequest(localRequest, localResponse, next)
           }
         }
       });
